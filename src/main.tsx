@@ -7,6 +7,7 @@ import {
 import App from './App.tsx'
 import './index.css'
 import User from './modules/ConfirmCheckin.tsx';
+import Scan from './modules/Scan/scan.tsx';
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
     path: "/users/:id",
     loader: ({params})=>({id: params.id}),
     element: <User/>
+  },
+  {
+    path: "/scan",
+    element: <Scan/>
   }
 ]);
 
