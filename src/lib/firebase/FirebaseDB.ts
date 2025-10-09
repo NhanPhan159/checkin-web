@@ -21,13 +21,11 @@ const firebaseHelper = {
   },
   addBunchUsers: async (userNoExist: TUser[]) => {
     const userPromise = userNoExist.map(user => {
-      // const userRef = doc(userCol, user.email)
       return addDoc(userCol, user)
     })
     Promise.all(userPromise).then(() => console.log("fuck firebase"))
   },
   addUser: async (data: TUser) => {
-    // const userRef = doc(userCol, data.email)
     await addDoc(userCol, data)
   },
   updateUser: async(idUser:string):Promise<Partial<TUser>|null> => {
