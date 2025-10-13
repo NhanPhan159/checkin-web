@@ -1,16 +1,13 @@
-import { useEffect, useState } from "react";
-import { Progress } from "../ui/progress";
+import { Button } from "../ui/button";
+import { Spinner } from "../ui/spinner";
 
 const Loading = () => {
-  const [progress, setProgress] = useState(13);
-  useEffect(() => {
-    const timer = setTimeout(() => setProgress(66), 500);
-    return () => clearTimeout(timer);
-  }, []);
   return (
-    <div className="absolute h-full w-full top-0 bottom-0 bg-[#0f0e0e1a] flex items-center justify-center">
-      {/* <Progress value={progress} className="w-[60%]" /> */}
-      Loading
+    <div className="absolute h-full w-full top-0 bottom-0 bg-[#0500006f] flex items-center justify-center">
+      <Button variant="outline" disabled size="lg">
+        <Spinner />
+        Please wait
+      </Button>
     </div>
   );
 };

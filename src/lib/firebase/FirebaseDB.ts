@@ -7,7 +7,7 @@ import {
   getDocs,
   getFirestore,
   query,
-  updateDoc,
+  // updateDoc,
   where,
 } from "firebase/firestore";
 
@@ -24,7 +24,7 @@ const firebaseHelper = {
   userNoExist: async (data: TUser[]) => {
     const userDb = await firebaseHelper.getUsers();
     const userNoExist = data.filter(
-      (curr) => !userDb.some((cur) => cur.name === curr.name)
+      (curr) => !userDb.some((cur) => cur.FullName === curr.FullName)
     );
     console.log(userNoExist);
     return userNoExist;
@@ -33,32 +33,32 @@ const firebaseHelper = {
     const userPromise = userNoExist.map((user) => {
       return addDoc(userCol, user);
     });
-    Promise.all(userPromise).then(() => console.log("fuck firebase"));
+    Promise.all(userPromise).then(() => console.log("Save to firebase"));
   },
   addUser: async (data: TUser) => {
     await addDoc(userCol, data);
   },
-  updateUser: async (idUser: string): Promise<Partial<TUser> | null> => {
-    const users = await firebaseHelper.getUsers();
+  // updateUser: async (idUser: string): Promise<Partial<TUser> | null> => {
+  //   const users = await firebaseHelper.getUsers();
 
-    console.log(users);
+  //   console.log(users);
     
-    if (idUser) {
-      const isExistUsers = users.some((user) => user.id === idUser);
-      if (isExistUsers) {
-        const queryUser = query(userCol, where("id", "==", idUser));
-        const querySnapshot = await getDocs(queryUser);
-        await updateDoc(querySnapshot.docs[0].ref, { status: status.CHECK_IN });
-        console.log("updated", {
-          ...querySnapshot.docs[0].data,
-          status: status.CHECK_IN,
-        });
+  //   if (idUser) {
+  //     const isExistUsers = users.some((user) => user.id === idUser);
+  //     if (isExistUsers) {
+  //       const queryUser = query(userCol, where("id", "==", idUser));
+  //       const querySnapshot = await getDocs(queryUser);
+  //       await updateDoc(querySnapshot.docs[0].ref, { status: status.CHECK_IN });
+  //       console.log("updated", {
+  //         ...querySnapshot.docs[0].data,
+  //         status: status.CHECK_IN,
+  //       });
 
-        return { ...querySnapshot.docs[0].data, status: status.CHECK_IN };
-      }
-    }
-    return null;
-  },
+  //       return { ...querySnapshot.docs[0].data, status: status.CHECK_IN };
+  //     }
+  //   }
+  //   return null;
+  // },
   queryValue: query(userCol, where("status", "==", status.CHECK_IN)),
 };
 

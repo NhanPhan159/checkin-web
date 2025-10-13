@@ -1,27 +1,19 @@
 import { TUser } from "@/type";
 import { createColumnHelper } from "@tanstack/react-table";
-import StatusTag from "../../components/customs/Tag";
+// import StatusTag from "../../components/customs/Tag";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import toast from "react-hot-toast";
 
 const columnHelper = createColumnHelper<TUser>();
 const columns = [
-  columnHelper.accessor("name", {
-    header: "User name",
+  columnHelper.accessor("FullName", {
+    header: "Họ và tên",
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor("type", {
-    header: "Type",
+  columnHelper.accessor("CompanyName", {
+    header: "Đơn vị",
     cell: (info) => info.renderValue(),
-  }),
-  columnHelper.accessor("branch", {
-    header: "Branch",
-    cell: (info) => info.renderValue(),
-  }),
-  columnHelper.accessor("status", {
-    header: "status",
-    cell: (info) => <StatusTag text={info.renderValue()} />,
   }),
   columnHelper.accessor("qr", {
     header: "QR",
@@ -53,7 +45,7 @@ const columns = [
         }
       };
       return (
-        <div className="max-w-[350px] text-wrap flex gap-2 m-auto">
+        <div className="max-w-[200px] text-wrap flex gap-2 m-auto">
           {info.renderValue() || ""}
           <Button
             onClick={() => handlerCopy(info.renderValue() || "")}

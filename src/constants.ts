@@ -4,6 +4,10 @@ export enum status {
 }
 export const BASE_URL = import.meta.env.VITE_BASE_URL_SERVER;
 
+export const KEY_SECRET = import.meta.env.VITE_KEY_SECRET;
+
+export const PAGE_SIZE = 6;
+
 export const firebaseConfigDB = {
   apiKey: import.meta.env.VITE_API_KEY || "",
 

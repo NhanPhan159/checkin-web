@@ -1,5 +1,6 @@
 import { useState } from "react";
-import img from "../../assets/imgs/calendar.png"
+import img from "../../assets/imgs/calendar.png";
+
 type TCalendar = {
   title: string;
   sections: {
@@ -7,6 +8,7 @@ type TCalendar = {
     duration: string;
   }[];
 };
+
 const dataCalendar: TCalendar[] = [
   {
     title: "Ngày 1: 16.10.2025",
@@ -57,24 +59,34 @@ const dataCalendar: TCalendar[] = [
     ],
   },
 ];
+
 const Calendar = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+
   return (
-    <div>
-        <div className="flex justify-center gap-5 items-center mb-20">
-            <img src={img} className="w-10 h-10" alt="" />
-            <h1 className="text-center bg-gradient-to-r from-[#e8b51f] to-[#5aa871] bg-clip-text text-transparent">Lịch trình sự kiện</h1>
-            
-        </div>
-      <div className="flex justify-center">
+    <div className="w-full py-10">
+      {/* Header */}
+      <div className="flex justify-center gap-3 items-center mb-10">
+        <img
+          src={img}
+          className="w-10 h-10 max-sm:w-6 max-sm:h-6"
+          alt="calendar icon"
+        />
+        <h1 className="sm:text-2xl font-bold text-center bg-gradient-to-r from-[#e8b51f] to-[#5aa871] bg-clip-text text-transparent">
+          Lịch trình sự kiện
+        </h1>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex justify-center flex-wrap gap-3 mb-10">
         {dataCalendar.map((calendar, index) => (
           <div
             key={calendar.title}
             onClick={() => setActiveIndex(index)}
             className={
-              "rounded-sm p-3 cursor-pointer font-bold " +
+              "rounded-sm p-3 text-sm sm:text-base cursor-pointer font-bold text-center min-w-[120px] transition-colors " +
               (activeIndex === index
-                ? "bg-[#a30a0a] text-white "
+                ? "bg-[#a30a0a] text-white"
                 : "bg-[#eeeeee] text-[#c2c2c2]")
             }
           >
@@ -82,33 +94,33 @@ const Calendar = () => {
           </div>
         ))}
       </div>
-      <div className="relative top-16 left-[30%]">
-        {/* Timeline line */}
-        <div className="bg-[#a30a0a] absolute top-2 bottom-[16%] left-[11px] w-[3px]" />
 
-        <div className="space-y-8">
+      {/* Timeline */}
+      <div className="relative sm:left-[30%] sm:top-16 top-8 left-0 px-6 sm:px-0">
+        {/* Line */}
+        <div className="bg-[#a30a0a] absolute top-2 bottom-[15%] sm:left-[9px] left-[33px] w-[2px]" />
+
+        <div className="space-y-6">
           {dataCalendar[activeIndex].sections.map((event) => (
-            <div
-              key={event.duration}
-              className="relative flex items-start gap-10"
-            >
-              {/* Timeline dot */}
-              <div className="relative z-10 flex h-6 w-6 items-center justify-center">
-                <div className="bg-[#a30a0a] h-4 w-4 flex justify-center items-center rounded-full">
-                  <div className="bg-white h-3 w-3 rounded-full"></div>
+            <div key={event.duration} className="relative flex items-start gap-5">
+              {/* Dot */}
+              <div className="relative z-10 flex h-5 w-5 items-center justify-center">
+                <div className="bg-[#a30a0a] h-3 w-3 rounded-full flex items-center justify-center">
+                  <div className="bg-white h-2 w-2 rounded-full"></div>
                 </div>
               </div>
 
-              {/* Event content */}
-              <div className="min-w-0 flex-1 pb-8">
+              {/* Content */}
+              <div className="flex-1 pb-6">
                 {event.name.map((curr) => (
-                  <div key={curr} className="font-bold foreground text-xl">
+                  <div
+                    key={curr}
+                    className="font-bold text-base sm:text-xl text-gray-800"
+                  >
                     {curr}
                   </div>
                 ))}
-                <div className="text-muted-foreground text-sm">
-                  {event.duration}
-                </div>
+                <div className="text-sm text-gray-500">{event.duration}</div>
               </div>
             </div>
           ))}
