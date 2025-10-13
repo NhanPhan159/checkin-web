@@ -1,40 +1,35 @@
 export enum status {
-  NON_CHECK_IN="non-check-in",
-  CHECK_IN="check-in"
+  NON_CHECK_IN = "non-check-in",
+  CHECK_IN = "check-in",
 }
-export const BASE_URL = import.meta.env.VITE_BASE_URL_SERVER
+export const BASE_URL = import.meta.env.VITE_BASE_URL_SERVER;
 
-console.log(444,import.meta.env.VITE_AUTH_DOMAIN)
 export const firebaseConfigDB = {
-  apiKey: "AIzaSyCWxgr8dU1uUNZwPdn-26h55uJPwB57Q1I",
+  apiKey: import.meta.env.VITE_API_KEY || "",
 
-  authDomain: "checkin-494fd.firebaseapp.com",
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN || "",
 
-  projectId: "checkin-494fd",
+  projectId: import.meta.env.VITE_PROJECTID || "",
 
-  storageBucket: "checkin-494fd.firebasestorage.app",
+  storageBucket: import.meta.env.VITE_STORAGEBUCKET || "",
 
-  messagingSenderId: "65384939807",
+  messagingSenderId: import.meta.env.VITE_STORAGEBUCKET || "",
 
-  appId: "1:65384939807:web:358b7d7d3b5f92df27b02a",
-
-  measurementId: "G-B9FFQVWKPG"
-
+  appId: import.meta.env.VITE_APPID || "",
+  measurementId: import.meta.env.VITE_MEASUREID || "",
 };
 
 export const firebaseConfigStorage = {
-  apiKey: "AIzaSyAkMYiVcgNPSXE5nSns-tZJeou4xu1p_mQ",
+  apiKey: import.meta.env.VITE_API_KEY_STOGARE || "",
 
-  authDomain: "tripdly-8f271.firebaseapp.com",
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN_STOGARE || "",
 
-  projectId: "tripdly-8f271",
+  projectId: import.meta.env.VITE_PROJECTID_STOGARE || "",
 
-  storageBucket: "tripdly-8f271.appspot.com",
+  storageBucket: import.meta.env.VITE_STORAGEBUCKET_STOGARE || "",
 
-  messagingSenderId: "352575218992",
+  messagingSenderId: import.meta.env.VITE_STORAGEBUCKET_STOGARE || "",
 
-  appId: "1:352575218992:web:15782e13030225c5a7d4f5",
-
-  measurementId: "G-ZKH77Y1XY3"
-
+  appId: import.meta.env.VITE_APPID_STOGARE || "",
+  measurementId: import.meta.env.VITE_MEASUREID_STOGARE || "",
 };

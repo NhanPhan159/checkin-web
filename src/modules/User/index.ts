@@ -1,4 +1,4 @@
-import { DataTable } from "./TableData";
+import { Table } from "./TableData";
 import columns from "./Column";
 
-export {DataTable,columns}
+export {Table,columns}

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -8,17 +8,18 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import firebaseHelper from "@/lib/firebase/FirebaseDB"
-import { TUser } from "@/type"
-import { FC, useState } from "react"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import firebaseHelper from "@/lib/firebase/FirebaseDB";
+import { TUser } from "@/type";
+import { FC, useState } from "react";
 // @ts-expect-error: import error
-import QRCode from 'qrcode'
-import firebaseStorage from "@/lib/firebase/FirebaseStorage"
-import userStore from "@/store"
-import {status} from "@/constants"
+import QRCode from "qrcode";
+import firebaseStorage from "@/lib/firebase/FirebaseStorage";
+import useGlobalStore from "@/store";
+import { status } from "@/constants";
+import { v4 as uuidv4 } from "uuid";
 
 const AddUserDialog: FC = () => {
   const [user, setUser] = useState<TUser>({
@@ -26,24 +27,31 @@ const AddUserDialog: FC = () => {
     name: "",
     status: status.NON_CHECK_IN,
     qrLink: "",
-    id: crypto.randomUUID()
-  })
-  const {fetchUsers} = userStore(state=>state)
+    id: uuidv4(),
+  });
+  const { fetchUsers } = useGlobalStore((state) => state);
   const handleAddUser = async () => {
     if (!!user.email && !!user.name) {
-      const usersNoExist = await firebaseHelper.userNoExist([user])
+      const usersNoExist = await firebaseHelper.userNoExist([user]);
       if (usersNoExist.length) {
-        const userNoExist = usersNoExist[0] 
-        const canvas = await QRCode.toCanvas(userNoExist.email)
-        const blob = await new Promise((resolve) => canvas.toBlob(resolve))
-        const urlImg = await firebaseStorage.getImgUrlFromFb(blob as Blob, userNoExist.email)
-        await firebaseHelper.addUser({...userNoExist,status:status.NON_CHECK_IN,qrLink:urlImg})
-        await fetchUsers()
+        const userNoExist = usersNoExist[0];
+        const canvas = await QRCode.toCanvas(userNoExist.email);
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve));
+        const urlImg = await firebaseStorage.getImgUrlFromFb(
+          blob as Blob,
+          userNoExist.email
+        );
+        await firebaseHelper.addUser({
+          ...userNoExist,
+          status: status.NON_CHECK_IN,
+          qrLink: urlImg,
+        });
+        await fetchUsers();
       } else {
-        alert("user is exist")
+        alert("user is exist");
       }
     }
-  }
+  };
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -61,13 +69,23 @@ const AddUserDialog: FC = () => {
             <Label htmlFor="name" className="text-right">
               Name
             </Label>
-            <Input id="name" value={user.name} onChange={(e) => setUser({ ...user, name: e.target.value })} className="col-span-3" />
+            <Input
+              id="name"
+              value={user.name}
+              onChange={(e) => setUser({ ...user, name: e.target.value })}
+              className="col-span-3"
+            />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-right">
               Email
             </Label>
-            <Input id="email" value={user.email} onChange={(e) => setUser({ ...user, email: e.target.value })} className="col-span-3" />
+            <Input
+              id="email"
+              value={user.email}
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              className="col-span-3"
+            />
           </div>
         </div>
         <DialogFooter>
@@ -77,7 +95,7 @@ const AddUserDialog: FC = () => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default AddUserDialog
+export default AddUserDialog;

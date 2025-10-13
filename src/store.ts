@@ -1,21 +1,25 @@
-import {create} from 'zustand'
-import { TUser } from './type'
-import firebaseHelper from './lib/firebase/FirebaseDB'
+import { create } from "zustand";
+import { TUser } from "./type";
+import firebaseHelper from "./lib/firebase/FirebaseDB";
 
 type State = {
-  users: TUser[]
-}
+  users: TUser[];
+  isLoading: boolean;
+};
 type Action = {
-  fetchUsers: ()=>void 
-}
+  fetchUsers: () => void;
+  setLoading: (value: boolean) => void;
+};
 
-const userStore = create<State & Action>((set)=>({
+const useGlobalStore = create<State & Action>((set) => ({
   users: [],
-  fetchUsers: async ()=>{
-    const users = await firebaseHelper.getUsers()
-    console.log(123,users)
-    set(()=>({users:users}))
-  }
-}))
+  isLoading: false,
+  fetchUsers: async () => {
+    const users = await firebaseHelper.getUsers();
+    console.log(123, users);
+    set(() => ({ users: users }));
+  },
+  setLoading: (value) => set(() => ({ isLoading: value })),
+}));
 
-export default userStore
+export default useGlobalStore;

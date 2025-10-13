@@ -8,39 +8,44 @@ import firebaseStorage from "./lib/firebase/FirebaseStorage";
 // @ts-expect-error: import error
 import QRCode from "qrcode";
 import { TUser } from "./type";
-import { columns, DataTable } from "./modules/User";
-import userStore from "./store";
+import { columns, Table } from "./modules/User";
+import useGlobalStore from "./store";
 import { BASE_URL, status } from "./constants";
 import { onSnapshot } from "firebase/firestore";
 import { Button } from "./components/ui/button";
-import Loading from "./components/customs/Loading";
-import { useEffect, useRef, useState } from "react";
-
+import { useEffect, useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
 const schemaExcel = {
   name: {
     prop: "name",
     type: String,
   },
-  email: {
-    prop: "email",
+  type: {
+    prop: "type",
+    type: String,
+  },
+  branch: {
+    prop: "branch",
     type: String,
   },
 };
 
 export default function App() {
   const fileRef = useRef<HTMLInputElement>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const { users, fetchUsers } = userStore((state) => state);
+  const { setLoading } = useGlobalStore((state)=>state);
+  const { users, fetchUsers } = useGlobalStore((state) => state);
   const postBunchUsers = async (data: TUser[]) => {
     await firebaseHelper.addBunchUsers(data);
   };
   const handleUploadExcel = async (data: any[]) => {
-    data = data.map((curr) => ({ ...curr, id: crypto.randomUUID() }));
+    data = data.map((curr) => ({ ...curr, id: uuidv4() }));
     const userNoExist = await firebaseHelper.userNoExist(data);
     if (userNoExist.length) {
+      setLoading(true);
       for (let i = 0; i < userNoExist.length; i++) {
         const canvas = await QRCode.toCanvas(
           `${BASE_URL}/users/${userNoExist[i].id}`,
+          // "https://www.aiaivn.com/vi",
           { width: 500 }
         );
         const blob = await new Promise((resolve) => canvas.toBlob(resolve));
@@ -48,26 +53,26 @@ export default function App() {
           blob as Blob,
           userNoExist[i].id
         );
+        userNoExist[i].qr = urlImg;
         userNoExist[i].qrLink = urlImg;
         userNoExist[i].status = status.NON_CHECK_IN;
       }
-      setIsLoading(true);
       await postBunchUsers(userNoExist);
       await fetchUsers();
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     (async () => {
-      setIsLoading(true);
+      setLoading(true);
       await fetchUsers();
       onSnapshot(firebaseHelper.queryValue, async () => {
-        setIsLoading(true);
+        setLoading(true);
         await fetchUsers();
-        setIsLoading(false);
+        setLoading(false);
       });
-      setIsLoading(false);
+      setLoading(false);
     })();
   }, []);
   return (
@@ -109,8 +114,7 @@ export default function App() {
 
         <AddUserDialog />
       </div>
-      <DataTable data={users} columns={columns} />
-      {isLoading && <Loading />}
+      <Table data={users} columns={columns} />
     </div>
   );
 }
