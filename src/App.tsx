@@ -41,7 +41,7 @@ export default function App() {
   };
   const handleUploadExcel = async (data: Record<string,string>[]) => {
     if (data.length === 0) {
-      toast.error("File not support, please check structure of file");
+      toast.error("File không được hỗ trợ, hãy kiểm tra lại cấu trúc file");
       return;
     }
     data = data.map((curr) => ({ ...curr, id: uuidv4() }));

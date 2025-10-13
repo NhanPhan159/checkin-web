@@ -12,7 +12,7 @@ const columns = [
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor("CompanyName", {
-    header: "Đơn vị",
+    header: "Đơn vị công ty",
     cell: (info) => info.renderValue(),
   }),
   columnHelper.accessor("qr", {
