@@ -45,7 +45,7 @@ const columns = [
         }
       };
       return (
-        <div className="max-w-[200px] text-wrap flex gap-2 m-auto">
+        <div className="max-w-[250px] text-wrap flex gap-2 m-auto">
           {info.renderValue() || ""}
           <Button
             onClick={() => handlerCopy(info.renderValue() || "")}
