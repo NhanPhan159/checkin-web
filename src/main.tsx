@@ -7,6 +7,8 @@ import User from "./modules/ConfirmCheckin.tsx";
 import Layout from "./layouts/layout.tsx";
 import Event from "./modules/Event/event.tsx";
 import Calendar from "./modules/Event/calendar.tsx";
+import CheckList from "./modules/Event/CheckList.tsx";
+import SeatMap from "./modules/Event/SeatMap.tsx";
 
 const router = createBrowserRouter([
   {
@@ -32,11 +34,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/seatmap",
-        element: <Event />,
+        element: <SeatMap csvUrl="./event-1610-data-images.csv" />,
       },
       {
         path: "/check-list",
-        element: <Event />,
+        element: <CheckList />,
       },
     ],
   },
