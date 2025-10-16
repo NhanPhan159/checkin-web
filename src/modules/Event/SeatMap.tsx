@@ -1,4 +1,13 @@
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useEffect, useMemo, useState, useCallback } from "react";
+//@ts-expect-error:"import"
+import Papa from "papaparse";
 
 const spacing = { xs: 8, sm: 12, md: 16, xxs: 4 };
 const seatMapColors = {
@@ -78,10 +87,24 @@ const Seat = ({
     {seat.column}
   </button>
 );
-
+type TData = {
+  name: string;
+  image: string;
+};
 export default function SeatMap({ csvUrl }: { csvUrl: string }) {
   const [csvData, setCsvData] = useState<CSVSeatData[]>([]);
   const [selected, setSelected] = useState<SeatData | null>(null);
+  const [data, setData] = useState<TData[]>([]);
+
+  const handleSelect = (val: string) => {
+    for (const seat of seats) {
+      const searchSeat = seat.find((curr) => curr.name === val);
+      if (searchSeat) {
+        setSelected({ ...searchSeat, row: +searchSeat.row })
+        break;
+      }
+    }
+  };
 
   useEffect(() => {
     fetch(csvUrl)
@@ -92,7 +115,21 @@ export default function SeatMap({ csvUrl }: { csvUrl: string }) {
 
   const seats = useMemo(() => generateSeats(csvData), [csvData]);
 
-  const onSelect = useCallback((s: SeatData) => setSelected(s), []);
+  const onSelect = useCallback((s: SeatData) => {
+    console.log(s);
+    setSelected(s);
+  }, []);
+  useEffect(() => {
+    Papa.parse("./event-1610-data-images.csv", {
+      download: true,
+      header: true, // dùng dòng đầu làm header
+      skipEmptyLines: true,
+      // complete: (result) => setData(result.data),
+      complete: (result: Record<string, string> & { data: TData[] }) =>
+        setData(result.data),
+      error: (err: string) => console.error(err),
+    });
+  }, []);
 
   return (
     <div
@@ -123,6 +160,23 @@ export default function SeatMap({ csvUrl }: { csvUrl: string }) {
         }}
       >
         <div style={{ flex: "1 1 220px", minWidth: 200 }}>
+          <div>
+            <Select value={selected?.name} onValueChange={(val) => handleSelect(val)}>
+              <SelectTrigger
+                iconClassName="text-white opacity-100"
+                className="w-[70%] h-[70px] focus-visible:ring-0 text-white data-[placeholder]:italic data-[placeholder]:text-white pl-0 ring-0 shadow-none border-0 border-b-white border-b-2 rounded-none"
+              >
+                <SelectValue placeholder="Nhập tên doanh nghiệp" className="" />
+              </SelectTrigger>
+              <SelectContent>
+                {data.map((curr) => (
+                  <SelectItem key={curr.name} value={curr.name}>
+                    {curr.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <div>
             <strong>Unit:</strong> {selected?.name || "--"}
           </div>
