@@ -23,17 +23,8 @@ export const firebaseConfigDB = {
   measurementId: import.meta.env.VITE_MEASUREID || "",
 };
 
-export const firebaseConfigStorage = {
-  apiKey: import.meta.env.VITE_API_KEY_STOGARE || "",
-
-  authDomain: import.meta.env.VITE_AUTH_DOMAIN_STOGARE || "",
-
-  projectId: import.meta.env.VITE_PROJECTID_STOGARE || "",
-
-  storageBucket: import.meta.env.VITE_STORAGEBUCKET_STOGARE || "",
-
-  messagingSenderId: import.meta.env.VITE_STORAGEBUCKET_STOGARE || "",
-
-  appId: import.meta.env.VITE_APPID_STOGARE || "",
-  measurementId: import.meta.env.VITE_MEASUREID_STOGARE || "",
+export const supaConfigStorage = {
+  supabaseUrl: import.meta.env.VITE_SUPABASE_URL || "",
+  publicKey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "",
+  bucket: import.meta.env.VITE_BUCKET || "",
 };

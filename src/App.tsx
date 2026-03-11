@@ -4,7 +4,6 @@ import { Input } from "./components/ui/input";
 import readXlsxFile from "read-excel-file";
 import firebaseHelper from "./lib/firebase/FirebaseDB";
 // import AddUserDialog from "./components/customs/AddUserDialog";
-import firebaseStorage from "./lib/firebase/FirebaseStorage";
 // @ts-expect-error: import error
 import QRCode from "qrcode";
 import { TUser } from "./type";
@@ -17,6 +16,7 @@ import { useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import ExportExcelButton from "./components/customs/ExcelExportBtn";
 import toast from "react-hot-toast";
+import supabaseClientInstance from "./lib/firebase/SupaStorage";
 const schemaExcel = {
   FullName: {
     prop: "FullName",
@@ -39,7 +39,7 @@ export default function App() {
   const postBunchUsers = async (data: TUser[]) => {
     await firebaseHelper.addBunchUsers(data);
   };
-  const handleUploadExcel = async (data: Record<string,string>[]) => {
+  const handleUploadExcel = async (data: Record<string, string>[]) => {
     if (data.length === 0) {
       toast.error("File không được hỗ trợ, hãy kiểm tra lại cấu trúc file");
       return;
@@ -50,21 +50,22 @@ export default function App() {
       setLoading(true);
       for (let i = 0; i < userNoExist.length; i++) {
         const encode = btoa(JSON.stringify(userNoExist[i]));
-        console.log(encode)
         const canvas = await QRCode.toCanvas(
           // `${BASE_URL}/users/${userNoExist[i].id}`,
           // "https://www.aiaivn.com/vi",
           encode,
-          { width: 500 }
+          { width: 500 },
         );
         const blob = await new Promise((resolve) => canvas.toBlob(resolve));
-        const urlImg = await firebaseStorage.getImgUrlFromFb(
+        const urlImg = await supabaseClientInstance.uploadImage(
           blob as Blob,
-          userNoExist[i].id
+          userNoExist[i].id,
         );
-        userNoExist[i].qr = urlImg;
-        userNoExist[i].qrLink = urlImg;
-        // userNoExist[i].status = status.NON_CHECK_IN;
+        if (urlImg) {
+          userNoExist[i].qr = urlImg;
+          userNoExist[i].qrLink = urlImg;
+          // userNoExist[i].status = status.NON_CHECK_IN;
+        }
       }
       await postBunchUsers(userNoExist);
       await fetchUsers();
@@ -98,7 +99,7 @@ export default function App() {
                 async ({ rows }) => {
                   // @ts-expect-error:"expect row type"
                   await handleUploadExcel(rows);
-                }
+                },
               )
             }
             className="w-56 hidden"
