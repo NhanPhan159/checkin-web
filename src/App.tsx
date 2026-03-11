@@ -17,6 +17,9 @@ import { v4 as uuidv4 } from "uuid";
 import ExportExcelButton from "./components/customs/ExcelExportBtn";
 import toast from "react-hot-toast";
 import supabaseClientInstance from "./lib/firebase/SupaStorage";
+import { status } from "./constants";
+import { Scan } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 const schemaExcel = {
   FullName: {
     prop: "FullName",
@@ -30,12 +33,19 @@ const schemaExcel = {
     type: String,
     required: true,
   },
+  email: {
+    prop: "email",
+    column: "email",
+    type: String,
+    required: true,
+  },
 };
 
 export default function App() {
   const fileRef = useRef<HTMLInputElement>(null);
   const { setLoading } = useGlobalStore((state) => state);
   const { users, fetchUsers } = useGlobalStore((state) => state);
+  const navigator = useNavigate();
   const postBunchUsers = async (data: TUser[]) => {
     await firebaseHelper.addBunchUsers(data);
   };
@@ -45,11 +55,12 @@ export default function App() {
       return;
     }
     data = data.map((curr) => ({ ...curr, id: uuidv4() }));
+    console.log(data);
     const userNoExist = await firebaseHelper.userNoExist(data as TUser[]);
     if (userNoExist.length) {
       setLoading(true);
       for (let i = 0; i < userNoExist.length; i++) {
-        const encode = btoa(JSON.stringify(userNoExist[i]));
+        const encode = userNoExist[i].id;
         const canvas = await QRCode.toCanvas(
           // `${BASE_URL}/users/${userNoExist[i].id}`,
           // "https://www.aiaivn.com/vi",
@@ -64,7 +75,7 @@ export default function App() {
         if (urlImg) {
           userNoExist[i].qr = urlImg;
           userNoExist[i].qrLink = urlImg;
-          // userNoExist[i].status = status.NON_CHECK_IN;
+          userNoExist[i].status = status.NON_CHECK_IN;
         }
       }
       await postBunchUsers(userNoExist);
@@ -123,6 +134,10 @@ export default function App() {
           </Button>
         </div>
         <ExportExcelButton data={users} fileName="UserInformation.xlsx" />
+        <Button variant={"default"} onClick={() => navigator("/scan-qr")}>
+          <Scan />
+          Check-in by QR
+        </Button>
         {/* <AddUserDialog /> */}
       </div>
       <Table data={users} columns={columns} />

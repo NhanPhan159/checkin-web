@@ -9,6 +9,7 @@ import Event from "./modules/Event/event.tsx";
 import Calendar from "./modules/Event/calendar.tsx";
 import CheckList from "./modules/Event/CheckList.tsx";
 import SeatMap from "./modules/Event/SeatMap.tsx";
+import QRPayment from "./modules/QRScan/index.tsx";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
         path: "/users/:id",
         loader: ({ params }) => ({ id: params.id }),
         element: <User />,
+      },
+      {
+        path: "/scan-qr",
+        element: <QRPayment />,
       },
       {
         path: "/events",
@@ -47,5 +52,5 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <RouterProvider router={router} />
-  </StrictMode>
+  </StrictMode>,
 );

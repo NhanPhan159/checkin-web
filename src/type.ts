@@ -1,11 +1,12 @@
-// import { status } from "./constants";
+import { status } from "./constants";
 
 export type TUser = {
   FullName: string;
   CompanyName: string;
   // branch: string;
-  // status: status;
+  status: status;
   qrLink: string;
   qr: string;
   id: string;
+  email: string;
 };

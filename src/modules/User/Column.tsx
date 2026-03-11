@@ -15,6 +15,10 @@ const columns = [
     header: "Đơn vị công ty",
     cell: (info) => info.renderValue(),
   }),
+  columnHelper.accessor("email", {
+    header: "Email",
+    cell: (info) => info.renderValue(),
+  }),
   columnHelper.accessor("qr", {
     header: "QR",
     cell: (info) => (
