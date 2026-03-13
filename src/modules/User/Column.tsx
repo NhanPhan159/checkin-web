@@ -4,6 +4,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import toast from "react-hot-toast";
+import StatusTag from "@/components/customs/Tag";
 
 const columnHelper = createColumnHelper<TUser>();
 const columns = [
@@ -18,6 +19,10 @@ const columns = [
   columnHelper.accessor("email", {
     header: "Email",
     cell: (info) => info.renderValue(),
+  }),
+  columnHelper.accessor("status", {
+    header: "Status",
+    cell: (info) => <StatusTag text={info.getValue()} />,
   }),
   columnHelper.accessor("qr", {
     header: "QR",
