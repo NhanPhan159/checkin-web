@@ -3,22 +3,29 @@ import { Scanner, type IDetectedBarcode } from "@yudiel/react-qr-scanner";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ScanResult from "./ScanResult";
+import firebaseHelper from "@/lib/firebase/FirebaseDB";
+import { TUser } from "@/type";
 
 function QRPayment() {
   const navigate = useNavigate();
-  const [scanResult, setScanResult] = useState<string | null>(null);
+  const [scanResult, setScanResult] = useState<TUser | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const onScan = (result: IDetectedBarcode[]) => {
+  const onScan = async (result: IDetectedBarcode[]) => {
     const encode = result[0];
-    if (encode.format === "qr_code" && !!encode.rawValue)
-      setScanResult(encode.rawValue);
+    if (encode.format === "qr_code" && !!encode.rawValue) {
+      const userID = encode.rawValue;
+      const data = await firebaseHelper.getUserById(userID);
+      setScanResult(data);
+    }
   };
-  //
 
   return (
     <>
       {scanResult ? (
-        <div>{scanResult}</div>
+        <>
+          <ScanResult result={scanResult} />
+        </>
       ) : (
         <div>
           <Scanner

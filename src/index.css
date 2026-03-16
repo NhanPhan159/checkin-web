@@ -1,7 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+#root {
+  padding: 2rem;
+	width: 100vw;
+	height: 100vw 
+}
 @layer base {
   :root {
     --background: 0 0% 94.1176%;

@@ -24,7 +24,7 @@ const firebaseHelper = {
   userNoExist: async (data: TUser[]) => {
     const userDb = await firebaseHelper.getUsers();
     const userNoExist = data.filter(
-      (curr) => !userDb.some((cur) => cur.FullName === curr.FullName)
+      (curr) => !userDb.some((cur) => cur.FullName === curr.FullName),
     );
     console.log(userNoExist);
     return userNoExist;
@@ -42,7 +42,7 @@ const firebaseHelper = {
   //   const users = await firebaseHelper.getUsers();
 
   //   console.log(users);
-    
+
   //   if (idUser) {
   //     const isExistUsers = users.some((user) => user.id === idUser);
   //     if (isExistUsers) {
@@ -59,6 +59,14 @@ const firebaseHelper = {
   //   }
   //   return null;
   // },
+  getUserById: async (idUser: string): Promise<TUser | null> => {
+    const users = await firebaseHelper.getUsers();
+    if (idUser) {
+      const isExistUsers = users.filter((user) => user.id === idUser);
+      return isExistUsers[0];
+    }
+    return null;
+  },
   queryValue: query(userCol, where("status", "==", status.CHECK_IN)),
 };
 
