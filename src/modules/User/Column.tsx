@@ -1,9 +1,9 @@
 import { TUser } from "@/type";
 import { createColumnHelper } from "@tanstack/react-table";
 // import StatusTag from "../../components/customs/Tag";
-import { Button } from "@/components/ui/button";
-import { Copy } from "lucide-react";
-import toast from "react-hot-toast";
+// import { Button } from "@/components/ui/button";
+// import { Copy } from "lucide-react";
+// import toast from "react-hot-toast";
 import StatusTag from "@/components/customs/Tag";
 
 const columnHelper = createColumnHelper<TUser>();
@@ -12,8 +12,16 @@ const columns = [
     header: "Họ và tên",
     cell: (info) => info.getValue(),
   }),
+  columnHelper.accessor("sex", {
+    header: "Sex",
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor("phone", {
+    header: "Phone",
+    cell: (info) => info.getValue(),
+  }),
   columnHelper.accessor("CompanyName", {
-    header: "Đơn vị công ty",
+    header: "Work Place",
     cell: (info) => info.renderValue(),
   }),
   columnHelper.accessor("email", {
@@ -32,41 +40,41 @@ const columns = [
       </div>
     ),
   }),
-  columnHelper.accessor("qrLink", {
-    header: "QR Link",
-    cell: (info) => {
-      const handlerCopy = async (text: string) => {
-        try {
-          if (navigator?.clipboard?.writeText) {
-            await navigator.clipboard.writeText(text);
-          } else {
-            const textarea = document.createElement("textarea");
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand("copy");
-            document.body.removeChild(textarea);
-          }
-          toast.success("Link copied!");
-        } catch (err) {
-          console.error("Copy failed", err);
-          toast.error("Copy failed");
-        }
-      };
-      return (
-        <div className="max-w-[250px] text-wrap flex gap-2 m-auto">
-          {info.renderValue() || ""}
-          <Button
-            onClick={() => handlerCopy(info.renderValue() || "")}
-            style={{ background: "#E5E4E2" }}
-            size={"icon"}
-          >
-            <Copy />
-          </Button>
-        </div>
-      );
-    },
-  }),
+  // columnHelper.accessor("qrLink", {
+  //   header: "QR Link",
+  //   cell: (info) => {
+  //     const handlerCopy = async (text: string) => {
+  //       try {
+  //         if (navigator?.clipboard?.writeText) {
+  //           await navigator.clipboard.writeText(text);
+  //         } else {
+  //           const textarea = document.createElement("textarea");
+  //           textarea.value = text;
+  //           document.body.appendChild(textarea);
+  //           textarea.select();
+  //           document.execCommand("copy");
+  //           document.body.removeChild(textarea);
+  //         }
+  //         toast.success("Link copied!");
+  //       } catch (err) {
+  //         console.error("Copy failed", err);
+  //         toast.error("Copy failed");
+  //       }
+  //     };
+  //     return (
+  //       <div className="max-w-[250px] text-wrap flex gap-2 m-auto">
+  //         {info.renderValue() || ""}
+  //         <Button
+  //           onClick={() => handlerCopy(info.renderValue() || "")}
+  //           style={{ background: "#E5E4E2" }}
+  //           size={"icon"}
+  //         >
+  //           <Copy />
+  //         </Button>
+  //       </div>
+  //     );
+  //   },
+  // }),
 ];
 
 export default columns;

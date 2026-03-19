@@ -20,22 +20,30 @@ import supabaseClientInstance from "./lib/firebase/SupaStorage";
 import { status } from "./constants";
 import { Scan } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Utils from "./utils";
 const schemaExcel = {
   FullName: {
     prop: "FullName",
     type: String,
     required: true,
-    column: "FullName",
   },
   CompanyName: {
     prop: "CompanyName",
-    column: "CompanyName",
     type: String,
     required: true,
   },
-  email: {
+  Email: {
     prop: "email",
-    column: "email",
+    type: String,
+    required: true,
+  },
+  Sex: {
+    prop: "sex",
+    type: String,
+    required: true,
+  },
+  "Phone Number": {
+    prop: "phone",
     type: String,
     required: true,
   },
@@ -55,7 +63,6 @@ export default function App() {
       return;
     }
     data = data.map((curr) => ({ ...curr, id: uuidv4() }));
-    console.log(data);
     const userNoExist = await firebaseHelper.userNoExist(data as TUser[]);
     if (userNoExist.length) {
       setLoading(true);
@@ -76,6 +83,7 @@ export default function App() {
           userNoExist[i].qr = urlImg;
           userNoExist[i].qrLink = urlImg;
           userNoExist[i].status = status.NON_CHECK_IN;
+          userNoExist[i].avatar = Utils.getRamdonAvatarIndex().toString();
         }
       }
       await postBunchUsers(userNoExist);

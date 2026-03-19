@@ -6,10 +6,22 @@ import { useNavigate } from "react-router-dom";
 import ScanResult from "./ScanResult";
 import firebaseHelper from "@/lib/firebase/FirebaseDB";
 import { TUser } from "@/type";
+import { status } from "@/constants";
 
 function QRPayment() {
   const navigate = useNavigate();
-  const [scanResult, setScanResult] = useState<TUser | null>(null);
+  const [scanResult, setScanResult] = useState<TUser | null>({
+    CompanyName: "Abc",
+    status: status.NON_CHECK_IN,
+    FullName: "abc",
+    email: "a@gmail.cpm",
+    qr: "abc",
+    qrLink: "abc",
+    id: "123",
+    avatar: "1",
+    sex: "male",
+    phone: "0909",
+  });
   const [error, setError] = useState<string | null>(null);
   const onScan = async (result: IDetectedBarcode[]) => {
     const encode = result[0];

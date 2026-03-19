@@ -9,4 +9,7 @@ export type TUser = {
   qr: string;
   id: string;
   email: string;
+  avatar: string;
+  sex: "female" | "male";
+  phone: string;
 };
