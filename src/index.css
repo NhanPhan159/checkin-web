@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 #root {
-  padding: 2rem;
 	width: 100vw;
 	height: 100vh 
 }

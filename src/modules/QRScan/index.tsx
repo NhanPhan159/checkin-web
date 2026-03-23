@@ -20,7 +20,7 @@ function QRPayment() {
     id: "123",
     avatar: "1",
     sex: "male",
-    phone: "0909",
+    phone: "0909112233",
   });
   const [error, setError] = useState<string | null>(null);
   const onScan = async (result: IDetectedBarcode[]) => {

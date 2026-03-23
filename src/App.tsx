@@ -3,13 +3,11 @@ import "./index.css";
 import { Input } from "./components/ui/input";
 import readXlsxFile from "read-excel-file";
 import firebaseHelper from "./lib/firebase/FirebaseDB";
-// import AddUserDialog from "./components/customs/AddUserDialog";
 // @ts-expect-error: import error
 import QRCode from "qrcode";
 import { TUser } from "./type";
 import { columns, Table } from "./modules/User";
 import useGlobalStore from "./store";
-// import { BASE_URL, status } from "./constants";
 import { onSnapshot } from "firebase/firestore";
 import { Button } from "./components/ui/button";
 import { useEffect, useRef } from "react";
@@ -95,15 +93,13 @@ export default function App() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      await fetchUsers();
       onSnapshot(firebaseHelper.queryValue, async () => {
         setLoading(true);
         await fetchUsers();
         setLoading(false);
       });
-      setLoading(false);
     })();
-  }, []);
+  }, [setLoading, fetchUsers]);
   return (
     <div className="grid grid-cols-1 gap-y-10 m-5">
       <div className="flex gap-8 items-center">

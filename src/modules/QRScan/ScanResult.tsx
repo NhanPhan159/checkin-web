@@ -1,5 +1,6 @@
 import bgImg from "@/assets/imgs/img.jpg";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { TUser } from "@/type";
 import Utils from "@/utils";
 import {
@@ -32,6 +33,7 @@ const ScanResult = (props: { result: TUser }) => {
   const [informationCells, setInformationCells] = useState<
     Record<string, string | ReactElement>[]
   >([]);
+
   const generateInformationCells = useCallback(() => {
     const a = [];
     if (props.result.phone) {
@@ -57,12 +59,14 @@ const ScanResult = (props: { result: TUser }) => {
     }
     setInformationCells(a);
   }, [props.result]);
+
   useEffect(() => {
     generateInformationCells();
   }, [generateInformationCells]);
+
   return (
     <>
-      <div className="size-full flex justify-center">
+      <div className="size-full flex-col items-center gap-3 flex justify-center">
         <div className="lg:w-[40%] lg:h-4/5 w-4/5 h-4/5 px-2 py-4 rounded-3xl shadow-xl bg-white">
           <img src={bgImg} className="rounded-3xl h-1/3 w-full" />
           <div className="flex flex-col justify-center items-center gap-3 h-4/5 relative lg:-top-[75px] md:-top-[80px] sm:-top-[100px] -top-[80px] ">
@@ -84,6 +88,7 @@ const ScanResult = (props: { result: TUser }) => {
               <div className="flex w-full justify-center sm:justify-around py-6 md:py-4 rounded-3xl bg-accent gap-7 lg:gap-0">
                 {informationCells.map((curr) => (
                   <InformationCell
+                    key={curr.content as string}
                     content={curr.content as string}
                     title={curr.title as string}
                     element={curr.element as ReactElement}
@@ -97,6 +102,10 @@ const ScanResult = (props: { result: TUser }) => {
               </div>
             </div>
           </div>
+        </div>
+        <div className="flex gap-5">
+          <Button variant={"default"}>Check-in</Button>
+          <Button variant={"outline"}>Go back</Button>
         </div>
       </div>
     </>

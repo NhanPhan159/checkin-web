@@ -7,7 +7,7 @@ type State = {
   isLoading: boolean;
 };
 type Action = {
-  fetchUsers: () => void;
+  fetchUsers: () => Promise<void>;
   setLoading: (value: boolean) => void;
 };
 
@@ -18,6 +18,7 @@ const useGlobalStore = create<State & Action>((set) => ({
     const users = await firebaseHelper.getUsers();
     console.log(123, users);
     set(() => ({ users: users }));
+    return;
   },
   setLoading: (value) => set(() => ({ isLoading: value })),
 }));
