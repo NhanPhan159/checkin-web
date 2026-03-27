@@ -19,6 +19,7 @@ import { status } from "./constants";
 import { Scan } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Utils from "./utils";
+import ManageField from "./modules/ManageField";
 const schemaExcel = {
   FullName: {
     prop: "FullName",
@@ -50,7 +51,9 @@ const schemaExcel = {
 export default function App() {
   const fileRef = useRef<HTMLInputElement>(null);
   const { setLoading } = useGlobalStore((state) => state);
-  const { users, fetchUsers } = useGlobalStore((state) => state);
+  const { users, fetchUsers, fetchTableFields, tableFields } = useGlobalStore(
+    (state) => state,
+  );
   const navigator = useNavigate();
   const postBunchUsers = async (data: TUser[]) => {
     await firebaseHelper.addBunchUsers(data);
@@ -89,17 +92,27 @@ export default function App() {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    const fetchResoure = async () => {
+      setLoading(true);
+      await fetchTableFields();
+      setLoading(false);
+    };
+    fetchResoure();
+  }, [fetchTableFields]);
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      onSnapshot(firebaseHelper.queryValue, async () => {
+    if (tableFields) {
+      (async () => {
         setLoading(true);
-        await fetchUsers();
-        setLoading(false);
-      });
-    })();
-  }, [setLoading, fetchUsers]);
+        onSnapshot(firebaseHelper.queryValue, async () => {
+          setLoading(true);
+          await fetchUsers();
+          setLoading(false);
+        });
+      })();
+    }
+  }, [setLoading, fetchUsers, tableFields]);
   return (
     <div className="grid grid-cols-1 gap-y-10 m-5">
       <div className="flex gap-8 items-center">
@@ -142,6 +155,7 @@ export default function App() {
           <Scan />
           Check-in by QR
         </Button>
+        <ManageField />
         {/* <AddUserDialog /> */}
       </div>
       <Table data={users} columns={columns} />

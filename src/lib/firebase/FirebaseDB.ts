@@ -1,5 +1,5 @@
 import { firebaseConfigDB, status } from "@/constants";
-import { TUser } from "@/type";
+import { TTableField, TUser } from "@/type";
 import { initializeApp } from "firebase/app";
 import {
   addDoc,
@@ -13,9 +13,21 @@ import {
 
 const app = initializeApp(firebaseConfigDB);
 const db = getFirestore(app);
-const userCol = collection(db, "user");
+const userCol = collection(db, "User");
+const tableFieldCol = collection(db, "TableField");
 
 const firebaseHelper = {
+  addTableField: async (data: TTableField[]) => {
+    const tableFieldsPromise = data.map((tableField) => {
+      return addDoc(tableFieldCol, tableField);
+    });
+    Promise.all(tableFieldsPromise).then(() => console.log("Save to firebase"));
+  },
+  getTableFields: async (): Promise<TTableField[]> => {
+    const userSnapshot = await getDocs(tableFieldCol);
+    const userList = userSnapshot.docs.map((doc) => doc.data());
+    return userList as TTableField[];
+  },
   getUsers: async (): Promise<TUser[]> => {
     const userSnapshot = await getDocs(userCol);
     const userList = userSnapshot.docs.map((doc) => doc.data());

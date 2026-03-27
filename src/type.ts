@@ -13,3 +13,9 @@ export type TUser = {
   sex: "female" | "male";
   phone: string;
 };
+
+export type TTableField = {
+  columnName: string;
+  prop: string;
+  require: boolean;
+};
