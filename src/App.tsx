@@ -6,11 +6,11 @@ import firebaseHelper from "./lib/firebase/FirebaseDB";
 // @ts-expect-error: import error
 import QRCode from "qrcode";
 import { TUser } from "./type";
-import { columns, Table } from "./modules/User";
+import { columns, Table, columnHelper } from "./modules/User";
 import useGlobalStore from "./store";
 import { onSnapshot } from "firebase/firestore";
 import { Button } from "./components/ui/button";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import ExportExcelButton from "./components/customs/ExcelExportBtn";
 import toast from "react-hot-toast";
@@ -54,6 +54,7 @@ export default function App() {
   const { users, fetchUsers, fetchTableFields, tableFields } = useGlobalStore(
     (state) => state,
   );
+  const [columnTable, setColumnTable] = useState<ReturnType<typeof columns>>();
   const navigator = useNavigate();
   const postBunchUsers = async (data: TUser[]) => {
     await firebaseHelper.addBunchUsers(data);
@@ -103,6 +104,14 @@ export default function App() {
 
   useEffect(() => {
     if (tableFields) {
+      const columnsResult: typeof columns = tableFields.map((tableField) => {
+        const column = columnHelper.accessor(tableField.prop, {
+          header: tableField.columnName,
+          cell: (info) => info.getValue(),
+        });
+        return column;
+      });
+      setColumnTable([...columnsResult, ...columns]);
       (async () => {
         setLoading(true);
         onSnapshot(firebaseHelper.queryValue, async () => {
@@ -158,7 +167,7 @@ export default function App() {
         <ManageField />
         {/* <AddUserDialog /> */}
       </div>
-      <Table data={users} columns={columns} />
+      {columnTable && <Table data={users} columns={columnTable} />}
     </div>
   );
 }

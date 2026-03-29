@@ -1,42 +1,43 @@
-import { TUser } from "@/type";
 import { createColumnHelper } from "@tanstack/react-table";
 // import StatusTag from "../../components/customs/Tag";
 // import { Button } from "@/components/ui/button";
 // import { Copy } from "lucide-react";
 // import toast from "react-hot-toast";
 import StatusTag from "@/components/customs/Tag";
+import { status } from "@/constants";
 
-const columnHelper = createColumnHelper<TUser>();
+const columnHelper =
+  createColumnHelper<Record<string, string | number | status>>();
 const columns = [
-  columnHelper.accessor("FullName", {
-    header: "Họ và tên",
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("sex", {
-    header: "Sex",
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("phone", {
-    header: "Phone",
-    cell: (info) => info.getValue(),
-  }),
-  columnHelper.accessor("CompanyName", {
-    header: "Work Place",
-    cell: (info) => info.renderValue(),
-  }),
-  columnHelper.accessor("email", {
-    header: "Email",
-    cell: (info) => info.renderValue(),
-  }),
+  // columnHelper.accessor("FullName", {
+  //   header: "Họ và tên",
+  //   cell: (info) => info.getValue(),
+  // }),
+  // columnHelper.accessor("sex", {
+  //   header: "Sex",
+  //   cell: (info) => info.getValue(),
+  // }),
+  // columnHelper.accessor("phone", {
+  //   header: "Phone",
+  //   cell: (info) => info.getValue(),
+  // }),
+  // columnHelper.accessor("CompanyName", {
+  //   header: "Work Place",
+  //   cell: (info) => info.renderValue(),
+  // }),
+  // columnHelper.accessor("email", {
+  //   header: "Email",
+  //   cell: (info) => info.renderValue(),
+  // }),
   columnHelper.accessor("status", {
     header: "Status",
-    cell: (info) => <StatusTag text={info.getValue()} />,
+    cell: (info) => <StatusTag text={info.getValue() as status} />,
   }),
   columnHelper.accessor("qr", {
     header: "QR",
     cell: (info) => (
       <div className="w-full flex justify-center">
-        <img className="w-20 h-20" src={info.renderValue() || ""} />
+        <img className="w-20 h-20" src={(info.renderValue() as string) || ""} />
       </div>
     ),
   }),
@@ -77,4 +78,4 @@ const columns = [
   // }),
 ];
 
-export default columns;
+export { columns, columnHelper };

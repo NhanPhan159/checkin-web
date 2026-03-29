@@ -1,4 +1,5 @@
 import { Table } from "./TableData";
-import columns from "./Column";
+import { columns, columnHelper } from "./Column";
 
-export {Table,columns}
+export { Table, columns, columnHelper };
+
