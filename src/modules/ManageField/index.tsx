@@ -60,7 +60,7 @@ const ManageField = () => {
               <Field>
                 <div className="flex justify-around">
                   <span>Prop</span>
-                  <span>Table Column</span>
+                  <span>Excel Column</span>
                 </div>
               </Field>
               {fields?.map((curr, index) => (

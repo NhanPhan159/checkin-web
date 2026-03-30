@@ -29,10 +29,16 @@ const InformationCell = (props: {
     </div>
   );
 };
+type TInformationCell = {
+  content: string | number;
+  title: string;
+  element: ReactElement;
+};
+
 const ScanResult = (props: { result: TUser }) => {
-  const [informationCells, setInformationCells] = useState<
-    Record<string, string | ReactElement>[]
-  >([]);
+  const [informationCells, setInformationCells] = useState<TInformationCell[]>(
+    [],
+  );
 
   const generateInformationCells = useCallback(() => {
     const a = [];

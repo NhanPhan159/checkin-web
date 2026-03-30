@@ -20,33 +20,34 @@ import { Scan } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Utils from "./utils";
 import ManageField from "./modules/ManageField";
-const schemaExcel = {
-  FullName: {
-    prop: "FullName",
-    type: String,
-    required: true,
-  },
-  CompanyName: {
-    prop: "CompanyName",
-    type: String,
-    required: true,
-  },
-  Email: {
-    prop: "email",
-    type: String,
-    required: true,
-  },
-  Sex: {
-    prop: "sex",
-    type: String,
-    required: true,
-  },
-  "Phone Number": {
-    prop: "phone",
-    type: String,
-    required: true,
-  },
-};
+import { Schema } from "read-excel-file";
+// const schemaExcel = {
+//   FullName: {
+//     prop: "FullName",
+//     type: String,
+//     required: true,
+//   },
+//   CompanyName: {
+//     prop: "CompanyName",
+//     type: String,
+//     required: true,
+//   },
+//   Email: {
+//     prop: "Email",
+//     type: String,
+//     required: true,
+//   },
+//   Sex: {
+//     prop: "sex",
+//     type: String,
+//     required: true,
+//   },
+//   "Phone Number": {
+//     prop: "phone",
+//     type: String,
+//     required: true,
+//   },
+// };
 
 export default function App() {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -54,7 +55,9 @@ export default function App() {
   const { users, fetchUsers, fetchTableFields, tableFields } = useGlobalStore(
     (state) => state,
   );
-  const [columnTable, setColumnTable] = useState<ReturnType<typeof columns>>();
+  const [columnTable, setColumnTable] = useState<typeof columns>();
+  const [schemaExcel, setSchemaExcel] =
+    useState<Schema<Record<string, object>>>();
   const navigator = useNavigate();
   const postBunchUsers = async (data: TUser[]) => {
     await firebaseHelper.addBunchUsers(data);
@@ -100,7 +103,7 @@ export default function App() {
       setLoading(false);
     };
     fetchResoure();
-  }, [fetchTableFields]);
+  }, []);
 
   useEffect(() => {
     if (tableFields) {
@@ -112,6 +115,18 @@ export default function App() {
         return column;
       });
       setColumnTable([...columnsResult, ...columns]);
+      const schemaExcelResult = tableFields.reduce(
+        (result: Schema, tableField) => {
+          result[tableField.columnName] = {
+            prop: tableField.prop,
+            type: String,
+            required: tableField.require,
+          };
+          return result;
+        },
+        {},
+      );
+      setSchemaExcel(schemaExcelResult);
       (async () => {
         setLoading(true);
         onSnapshot(firebaseHelper.queryValue, async () => {
@@ -126,21 +141,23 @@ export default function App() {
     <div className="grid grid-cols-1 gap-y-10 m-5">
       <div className="flex gap-8 items-center">
         <div>
-          <Input
-            type="file"
-            accept=".xlsx"
-            ref={fileRef}
-            onChange={(e) =>
-              e.target.files &&
-              readXlsxFile(e.target?.files[0], { schema: schemaExcel }).then(
-                async ({ rows }) => {
+          {schemaExcel && (
+            <Input
+              type="file"
+              accept=".xlsx"
+              ref={fileRef}
+              onChange={(e) =>
+                e.target.files &&
+                readXlsxFile(e.target?.files[0], {
+                  schema: schemaExcel,
+                }).then(async ({ rows }) => {
                   // @ts-expect-error:"expect row type"
                   await handleUploadExcel(rows);
-                },
-              )
-            }
-            className="w-56 hidden"
-          />
+                })
+              }
+              className="w-56 hidden"
+            />
+          )}
           <Button variant={"default"} onClick={() => fileRef.current?.click()}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
