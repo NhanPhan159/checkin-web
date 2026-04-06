@@ -3,29 +3,34 @@ import { TTableField } from "./type";
 export const CONFIG = {
   TABLE_FIELD_DEFAULT: (): TTableField[] => [
     {
+      id: "1",
       prop: "FullName",
       require: true,
-      columnName: "FullName",
+      excelColumnName: "FullName",
     },
     {
+      id: "2",
       prop: "CompanyName",
       require: true,
-      columnName: "CompanyName",
+      excelColumnName: "Work Place",
     },
     {
+      id: "3",
       prop: "Email",
       require: true,
-      columnName: "email",
+      excelColumnName: "email",
     },
     {
+      id: "4",
       prop: "sex",
       require: true,
-      columnName: "Sex",
+      excelColumnName: "Sex",
     },
     {
+      id: "5",
       prop: "phone",
       require: true,
-      columnName: "Phone number",
+      excelColumnName: "Phone number",
     },
   ],
 };

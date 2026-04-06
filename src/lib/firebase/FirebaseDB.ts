@@ -7,7 +7,7 @@ import {
   getDocs,
   getFirestore,
   query,
-  // updateDoc,
+  updateDoc,
   where,
 } from "firebase/firestore";
 
@@ -17,16 +17,29 @@ const userCol = collection(db, "User");
 const tableFieldCol = collection(db, "TableField");
 
 const firebaseHelper = {
+  updateTableField: async (data: TTableField[]): Promise<string> => {
+    const tableFieldsPromise = data.map((tableField) => {
+      const queryUser = query(tableFieldCol, where("id", "==", tableField.id));
+      return getDocs(queryUser).then((querySnapshot) =>
+        updateDoc(querySnapshot.docs[0].ref, tableField),
+      );
+    });
+    const a = await Promise.all(tableFieldsPromise);
+    console.log("Update to firebase : ", a);
+    return "";
+  },
+
   addTableField: async (data: TTableField[]) => {
     const tableFieldsPromise = data.map((tableField) => {
       return addDoc(tableFieldCol, tableField);
     });
     Promise.all(tableFieldsPromise).then(() => console.log("Save to firebase"));
   },
-  getTableFields: async (): Promise<TTableField[]> => {
-    const userSnapshot = await getDocs(tableFieldCol);
-    const userList = userSnapshot.docs.map((doc) => doc.data());
-    return userList as TTableField[];
+  getTableFields: async (): Promise<TTableField[] | null> => {
+    const tableFieldSnapshot = await getDocs(tableFieldCol);
+    const tableFields = tableFieldSnapshot.docs.map((doc) => doc.data());
+    if (tableFields.length) return tableFields as TTableField[];
+    return null;
   },
   getUsers: async (): Promise<TUser[]> => {
     const userSnapshot = await getDocs(userCol);

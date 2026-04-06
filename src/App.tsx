@@ -21,33 +21,6 @@ import { useNavigate } from "react-router-dom";
 import Utils from "./utils";
 import ManageField from "./modules/ManageField";
 import { Schema } from "read-excel-file";
-// const schemaExcel = {
-//   FullName: {
-//     prop: "FullName",
-//     type: String,
-//     required: true,
-//   },
-//   CompanyName: {
-//     prop: "CompanyName",
-//     type: String,
-//     required: true,
-//   },
-//   Email: {
-//     prop: "Email",
-//     type: String,
-//     required: true,
-//   },
-//   Sex: {
-//     prop: "sex",
-//     type: String,
-//     required: true,
-//   },
-//   "Phone Number": {
-//     prop: "phone",
-//     type: String,
-//     required: true,
-//   },
-// };
 
 export default function App() {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -109,7 +82,7 @@ export default function App() {
     if (tableFields) {
       const columnsResult: typeof columns = tableFields.map((tableField) => {
         const column = columnHelper.accessor(tableField.prop, {
-          header: tableField.columnName,
+          header: tableField.excelColumnName,
           cell: (info) => info.getValue(),
         });
         return column;
@@ -117,7 +90,7 @@ export default function App() {
       setColumnTable([...columnsResult, ...columns]);
       const schemaExcelResult = tableFields.reduce(
         (result: Schema, tableField) => {
-          result[tableField.columnName] = {
+          result[tableField.excelColumnName] = {
             prop: tableField.prop,
             type: String,
             required: tableField.require,
