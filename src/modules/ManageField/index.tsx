@@ -25,14 +25,20 @@ const ManageField = () => {
   const { tableFields, fetchTableFields } = useGlobalStore((state) => state);
   const [loading, setLoading] = useState<boolean>(false);
   const handleSave = async () => {
-    if (!fields || !fields.length) return;
-    setLoading(true);
-    if (!tableFields) await firebaseHelper.addTableField(fields);
-    else await firebaseHelper.updateTableField(fields);
-    await fetchTableFields();
-    setLoading(false);
-    toast.success("Save change successfully!!!");
-    setOpenDialog(false);
+    try {
+      if (!fields || !fields.length) return;
+      setLoading(true);
+      if (!tableFields) await firebaseHelper.addTableField(fields);
+      else await firebaseHelper.updateTableField(fields);
+      await fetchTableFields();
+      setLoading(false);
+      toast.success("Save change successfully!!!");
+      setOpenDialog(false);
+    } catch (e) {
+      if (e instanceof Error) toast.error(e.name + e.message);
+      setLoading(false);
+      setOpenDialog(false);
+    }
   };
   const handleOnChange = (
     id: string,

@@ -19,10 +19,7 @@ export class SupabaseHelper {
         contentType: "image/png",
       });
 
-    if (error) {
-      console.error("Upload error:", error);
-      return null;
-    }
+    if (error) throw error;
 
     const { data } = this.client.storage
       .from(this.bucket)

@@ -18,14 +18,26 @@ const useGlobalStore = create<State & Action>((set) => ({
   tableFields: null,
   isLoading: false,
   fetchUsers: async () => {
-    const users = await firebaseHelper.getUsers();
-    set(() => ({ users: users }));
-    return;
+    try {
+      const users = await firebaseHelper.getUsers();
+      set(() => ({ users: users }));
+      return;
+    } catch (e) {
+      if (e instanceof Error) {
+        throw e;
+      } else throw Error("Something error in store fetchUsers ");
+    }
   },
   fetchTableFields: async () => {
-    const tableFields = await firebaseHelper.getTableFields();
-    set(() => ({ tableFields: tableFields }));
-    return;
+    try {
+      const tableFields = await firebaseHelper.getTableFields();
+      set(() => ({ tableFields: tableFields }));
+      return;
+    } catch (e) {
+      if (e instanceof Error) {
+        throw e;
+      } else throw Error("Something error in store fetchTableFields ");
+    }
   },
   setLoading: (value) => set(() => ({ isLoading: value })),
 }));

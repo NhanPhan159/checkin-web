@@ -44,29 +44,36 @@ export default function App() {
     const userNoExist = await firebaseHelper.userNoExist(data as TUser[]);
     if (userNoExist.length) {
       setLoading(true);
-      for (let i = 0; i < userNoExist.length; i++) {
-        const encode = userNoExist[i].id;
-        const canvas = await QRCode.toCanvas(
-          // `${BASE_URL}/users/${userNoExist[i].id}`,
-          // "https://www.aiaivn.com/vi",
-          encode,
-          { width: 500 },
-        );
-        const blob = await new Promise((resolve) => canvas.toBlob(resolve));
-        const urlImg = await supabaseClientInstance.uploadImage(
-          blob as Blob,
-          userNoExist[i].id,
-        );
-        if (urlImg) {
-          userNoExist[i].qr = urlImg;
-          userNoExist[i].qrLink = urlImg;
-          userNoExist[i].status = status.NON_CHECK_IN;
-          userNoExist[i].avatar = Utils.getRamdonAvatarIndex().toString();
+      try {
+        for (let i = 0; i < userNoExist.length; i++) {
+          const encode = userNoExist[i].id;
+          const canvas = await QRCode.toCanvas(
+            // `${BASE_URL}/users/${userNoExist[i].id}`,
+            // "https://www.aiaivn.com/vi",
+            encode,
+            { width: 500 },
+          );
+          const blob = await new Promise((resolve) => canvas.toBlob(resolve));
+          const urlImg = await supabaseClientInstance.uploadImage(
+            blob as Blob,
+            userNoExist[i].id,
+          );
+          if (urlImg) {
+            userNoExist[i].qr = urlImg;
+            userNoExist[i].qrLink = urlImg;
+            userNoExist[i].status = status.NON_CHECK_IN;
+            userNoExist[i].avatar = Utils.getRamdonAvatarIndex().toString();
+          }
         }
+        await postBunchUsers(userNoExist);
+        await fetchUsers();
+        setLoading(false);
+      } catch (e) {
+        if (e instanceof Error) {
+          toast.error(`${e.name} : ${e.message}`);
+        } else toast.error("Something get error here");
+        setLoading(false);
       }
-      await postBunchUsers(userNoExist);
-      await fetchUsers();
-      setLoading(false);
     }
   };
   useEffect(() => {
@@ -75,7 +82,14 @@ export default function App() {
       await fetchTableFields();
       setLoading(false);
     };
-    fetchResoure();
+    try {
+      fetchResoure();
+    } catch (e) {
+      if (e instanceof Error) {
+        toast.error(`${e.name} : ${e.message}`);
+      } else toast.error("Something gets in useEffect fetchResoure");
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -101,12 +115,19 @@ export default function App() {
       );
       setSchemaExcel(schemaExcelResult);
       (async () => {
-        setLoading(true);
-        onSnapshot(firebaseHelper.queryValue, async () => {
+        try {
           setLoading(true);
-          await fetchUsers();
+          onSnapshot(firebaseHelper.queryValue, async () => {
+            setLoading(true);
+            await fetchUsers();
+            setLoading(false);
+          });
+        } catch (e) {
+          if (e instanceof Error) {
+            toast.error(`${e.name} : ${e.message}`);
+          } else toast.error("Something get error here");
           setLoading(false);
-        });
+        }
       })();
     }
   }, [setLoading, fetchUsers, tableFields]);
