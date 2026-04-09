@@ -1,4 +1,5 @@
 import { firebaseConfigDB, status } from "@/constants";
+import useGlobalStore from "@/store";
 import { TTableField, TUser } from "@/type";
 import { initializeApp } from "firebase/app";
 import {
@@ -110,27 +111,32 @@ const firebaseHelper = {
       } else throw Error("Something error in function addBunchUsers");
     }
   },
-  // updateUser: async (idUser: string): Promise<Partial<TUser> | null> => {
-  //   const users = await firebaseHelper.getUsers();
+  updateUser: async (idUser: string): Promise<Partial<TUser> | null> => {
+    try {
+      const users = await firebaseHelper.getUsers();
+      if (idUser) {
+        const isExistUsers = users.some((user) => user.id === idUser);
+        if (isExistUsers) {
+          const queryUser = query(userCol, where("id", "==", idUser));
+          const querySnapshot = await getDocs(queryUser);
+          await updateDoc(querySnapshot.docs[0].ref, {
+            status: status.CHECK_IN,
+          });
+          console.log("updated", {
+            ...querySnapshot.docs[0].data,
+            status: status.CHECK_IN,
+          });
 
-  //   console.log(users);
-
-  //   if (idUser) {
-  //     const isExistUsers = users.some((user) => user.id === idUser);
-  //     if (isExistUsers) {
-  //       const queryUser = query(userCol, where("id", "==", idUser));
-  //       const querySnapshot = await getDocs(queryUser);
-  //       await updateDoc(querySnapshot.docs[0].ref, { status: status.CHECK_IN });
-  //       console.log("updated", {
-  //         ...querySnapshot.docs[0].data,
-  //         status: status.CHECK_IN,
-  //       });
-
-  //       return { ...querySnapshot.docs[0].data, status: status.CHECK_IN };
-  //     }
-  //   }
-  //   return null;
-  // },
+          return { ...querySnapshot.docs[0].data, status: status.CHECK_IN };
+        }
+      }
+      return null;
+    } catch (e) {
+      if (e instanceof Error) {
+        throw e;
+      } else throw Error("Something error in function updateUser");
+    }
+  },
   getUserById: async (idUser: string): Promise<TUser | null> => {
     try {
       const users = await firebaseHelper.getUsers();

@@ -3,6 +3,7 @@
 @tailwind utilities;
 #root {
 	width: 100vw;
+	box-sizing: border-box;
 	height: 100vh 
 }
 @media screen and (max-width: 640px){
